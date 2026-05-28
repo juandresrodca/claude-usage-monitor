@@ -1,0 +1,46 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio / Rider IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.csproj.user
+*.sln.docstates
+
+# JetBrains
+*.DotSettings.user
+
+# .NET tooling
+*.cache
+*.tlog
+*.log
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+# Publish output
+publish/
+*.pubxml.user
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local Claude Code config
+.claude/settings.local.json
+
+# Sample / personal data dumps that should never ship
+**/endpoint_discovery_*.json
+**/debug_last_fetch.json
+**/config.json
+**/settings.json
