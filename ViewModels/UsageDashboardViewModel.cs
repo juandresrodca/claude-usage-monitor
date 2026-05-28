@@ -41,8 +41,13 @@ public class UsageDashboardViewModel : INotifyPropertyChanged
     }
 
     // ── Connection ────────────────────────────────────────────────────────
+    // Any of these proves we have a working auth path: explicit cookies/key,
+    // a UserEmail captured from a past sync, or the LastSyncOk flag set by
+    // the most recent successful fetch.
     public bool IsConnected => !string.IsNullOrWhiteSpace(_settings.SessionKey) ||
-                               !string.IsNullOrWhiteSpace(_settings.AllCookies);
+                               !string.IsNullOrWhiteSpace(_settings.AllCookies) ||
+                               !string.IsNullOrWhiteSpace(_settings.UserEmail) ||
+                               _settings.LastSyncOk;
     public string ConnectionText => IsConnected
         ? _loc.Format("connected_to_fmt", _settings.UserEmail ?? _loc["claude_account"])
         : _loc["not_connected"];
@@ -109,8 +114,12 @@ public class UsageDashboardViewModel : INotifyPropertyChanged
         if (email != null && email != _settings.UserEmail)
         {
             _settings.UserEmail = email;
-            _storage.SaveSettings(_settings);
         }
+        if (!_settings.LastSyncOk)
+        {
+            _settings.LastSyncOk = true;
+        }
+        _storage.SaveSettings(_settings);
 
         _data.CurrentSessionPercent      = data.SessionPercent;
         _data.SessionResetTime           = data.SessionResetsAt;
