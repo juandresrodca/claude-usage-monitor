@@ -42,14 +42,30 @@ The app pulls data straight from the same endpoint your browser hits at
 
 ### Install from a release
 
-1. Download the latest `ClaudeUsageMonitor-vX.Y.Z-win-x64.zip` from
-   [Releases](../../releases).
-2. Unzip anywhere (e.g. `C:\Apps\ClaudeUsageMonitor\`).
-3. Double-click `ClaudeUsageMonitor.exe`. A flower-shaped tray icon appears.
-4. Right-click the tray icon → **Configuración / Settings** → **Sign in with
-   Claude** and log in. The dashboard populates within a couple of seconds.
+Two options on every release:
 
-That's it. The app auto-refreshes every 10 minutes (configurable).
+**A. Installer (recommended)**
+1. Download `ClaudeUsageMonitor-vX.Y.Z-Setup.exe` from [Releases](../../releases).
+2. Double-click and follow the wizard. Installs **per-user** under
+   `%LOCALAPPDATA%\Programs\Claude Usage Monitor` — no admin rights needed.
+3. Adds a Start Menu entry and an uninstaller (visible in **Settings →
+   Apps**). Optionally creates a desktop shortcut and a "start with Windows"
+   entry.
+4. If the Microsoft Edge **WebView2 Runtime** is missing, the installer points
+   you at the official Microsoft download page.
+
+> SmartScreen may warn that the installer is from an unverified publisher
+> (the binary isn't code-signed). Click **More info → Run anyway**. The
+> source is fully visible in this repo.
+
+**B. Portable zip**
+1. Download `ClaudeUsageMonitor-vX.Y.Z-win-x64.zip` from [Releases](../../releases).
+2. Unzip anywhere (e.g. `C:\Apps\ClaudeUsageMonitor\`).
+3. Double-click `ClaudeUsageMonitor.exe`.
+
+In both cases: right-click the tray icon → **Settings / Configuración** →
+**Sign in with Claude**. The dashboard populates within a couple of seconds
+and auto-refreshes every 10 minutes (configurable).
 
 ---
 
@@ -67,27 +83,49 @@ dotnet build
 dotnet run
 ```
 
-### Building a self-contained release
-
-This produces a single folder you can zip and distribute. The runtime is bundled
-so end users don't need to install .NET separately.
+### Building a self-contained release (single EXE)
 
 ```powershell
-dotnet publish -c Release -r win-x64 --self-contained true `
-    /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true
+pwsh build/publish.ps1
 ```
 
-Output lands in `bin/Release/net8.0-windows/win-x64/publish/`. Ship the whole
-folder (single EXE + a few WebView2 native DLLs).
+This wraps `dotnet publish` with the right flags and lands the output in
+`dist/ClaudeUsageMonitor-<version>-win-x64/`. The runtime is bundled so end
+users don't need .NET installed.
 
-### Framework-dependent release (smaller)
-
-If your users already have the .NET 8 Desktop Runtime, this build is ~5 MB
-instead of ~150 MB:
+Override the version on the CLI:
 
 ```powershell
-dotnet publish -c Release -r win-x64 --self-contained false `
-    /p:PublishSingleFile=true
+pwsh build/publish.ps1 -Version 0.2.0
+```
+
+### Building the Setup.exe installer
+
+```powershell
+# One-time: install Inno Setup 6
+winget install JRSoftware.InnoSetup
+
+# Then:
+pwsh build/build-installer.ps1
+```
+
+Produces `dist/ClaudeUsageMonitor-<version>-Setup.exe` — the installer wizard
+that lands the app under `%LOCALAPPDATA%\Programs\` and registers the
+uninstaller with Windows.
+
+### Automated releases via GitHub Actions
+
+The repo ships with [.github/workflows/release.yml](.github/workflows/release.yml).
+Push a tag `vX.Y.Z` (or trigger the workflow manually) and CI will:
+
+1. Publish the self-contained EXE.
+2. Zip it as `ClaudeUsageMonitor-vX.Y.Z-win-x64.zip`.
+3. Compile the Inno Setup installer as `ClaudeUsageMonitor-vX.Y.Z-Setup.exe`.
+4. Attach both to a GitHub Release with auto-generated notes.
+
+```powershell
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
 ---
