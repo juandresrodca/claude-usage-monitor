@@ -67,69 +67,6 @@ In both cases: right-click the tray icon → **Settings / Configuración** →
 **Sign in with Claude**. The dashboard populates within a couple of seconds
 and auto-refreshes every 10 minutes (configurable).
 
----
-
-## Build from source
-
-```powershell
-# 1. Clone
-git clone https://github.com/<your-user>/claude-usage-monitor.git
-cd claude-usage-monitor
-
-# 2. Restore + build (debug)
-dotnet build
-
-# 3. Run
-dotnet run
-```
-
-### Building a self-contained release (single EXE)
-
-```powershell
-pwsh build/publish.ps1
-```
-
-This wraps `dotnet publish` with the right flags and lands the output in
-`dist/ClaudeUsageMonitor-<version>-win-x64/`. The runtime is bundled so end
-users don't need .NET installed.
-
-Override the version on the CLI:
-
-```powershell
-pwsh build/publish.ps1 -Version 0.2.0
-```
-
-### Building the Setup.exe installer
-
-```powershell
-# One-time: install Inno Setup 6
-winget install JRSoftware.InnoSetup
-
-# Then:
-pwsh build/build-installer.ps1
-```
-
-Produces `dist/ClaudeUsageMonitor-<version>-Setup.exe` — the installer wizard
-that lands the app under `%LOCALAPPDATA%\Programs\` and registers the
-uninstaller with Windows.
-
-### Automated releases via GitHub Actions
-
-The repo ships with [.github/workflows/release.yml](.github/workflows/release.yml).
-Push a tag `vX.Y.Z` (or trigger the workflow manually) and CI will:
-
-1. Publish the self-contained EXE.
-2. Zip it as `ClaudeUsageMonitor-vX.Y.Z-win-x64.zip`.
-3. Compile the Inno Setup installer as `ClaudeUsageMonitor-vX.Y.Z-Setup.exe`.
-4. Attach both to a GitHub Release with auto-generated notes.
-
-```powershell
-git tag v0.1.0
-git push origin v0.1.0
-```
-
----
-
 ## How the data flow works
 
 ```
