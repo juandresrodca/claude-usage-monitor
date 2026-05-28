@@ -97,7 +97,7 @@ public class ClaudeApiService
             var doc = JsonDocument.Parse(body);
             var root = doc.RootElement;
 
-            string? email = root.TryGetProperty("email", out var em) ? em.GetString() : null;
+            string? email = ReadEmail(root);
             _orgId = ExtractOrgId(root);
 
             return (true, email, null);
@@ -151,7 +151,7 @@ public class ClaudeApiService
             {
                 var doc  = JsonDocument.Parse(accountJson);
                 var root = doc.RootElement;
-                email  = root.TryGetProperty("email", out var em) ? em.GetString() : null;
+                email  = ReadEmail(root);
                 _orgId = ExtractOrgId(root) ?? _orgId;
             }
             catch { }
@@ -174,6 +174,17 @@ public class ClaudeApiService
     }
 
     private static string Snip(string s) => s.Length > 250 ? s[..250] + "…" : s;
+
+    // ── Email extraction ──────────────────────────────────────────────────
+    // /api/account currently returns "email_address". Older API versions used
+    // "email". Try both so we don't break either way.
+    private static string? ReadEmail(JsonElement root)
+    {
+        foreach (var key in new[] { "email_address", "email" })
+            if (root.TryGetProperty(key, out var em) && em.ValueKind == JsonValueKind.String)
+                return em.GetString();
+        return null;
+    }
 
     // ── Org ID extraction ─────────────────────────────────────────────────
 

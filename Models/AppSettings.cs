@@ -11,4 +11,8 @@ public class AppSettings
     // Full cookie jar captured from WebView2 login (includes sessionKey + Cloudflare cookies)
     public string AllCookies { get; set; } = "";
     public AppLanguage Language { get; set; } = AppLanguage.Es;
+    // True after the most recent successful sync. Used to show "connected" on
+    // the dashboard even if SessionKey/AllCookies were emptied by a partial
+    // Clear Session while WebView2 still holds valid cookies.
+    public bool LastSyncOk { get; set; }
 }

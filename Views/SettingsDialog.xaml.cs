@@ -80,6 +80,7 @@ public partial class SettingsDialog : Window
         settings.AllCookies = "";
         settings.UserEmail  = "";
         settings.OrgId      = null;
+        settings.LastSyncOk = false;
         _tray.Storage.SaveSettings(settings);
         SessionKeyBox.Password = "";
         _sessionKeyChanged = false;
