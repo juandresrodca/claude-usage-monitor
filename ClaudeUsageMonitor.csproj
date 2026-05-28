@@ -10,6 +10,28 @@
     <RootNamespace>ClaudeUsageMonitor</RootNamespace>
     <AssemblyName>ClaudeUsageMonitor</AssemblyName>
 
+    <!-- Identity / metadata visible in Explorer file properties and Add/Remove Programs -->
+    <Product>Claude Usage Monitor</Product>
+    <AssemblyTitle>Claude Usage Monitor</AssemblyTitle>
+    <Description>Windows tray app that shows your Claude.ai 5-hour and weekly usage limits.</Description>
+    <Company>juandresrodca</Company>
+    <Authors>juandresrodca</Authors>
+    <Copyright>Copyright (c) 2026 Juan Andres Rodriguez</Copyright>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+
+    <!-- Publish defaults — overridable on the CLI -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('Assets\app.ico')">
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

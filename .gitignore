@@ -25,6 +25,7 @@ project.assets.json
 
 # Publish output
 publish/
+dist/
 *.pubxml.user
 
 # Test results
